@@ -1,8 +1,6 @@
 package com.example.pemogramanmobile1.ui.screen
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,309 +13,667 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.pemogramanmobile1.R
 import com.example.pemogramanmobile1.data.dummy.DummyData
 import com.example.pemogramanmobile1.data.model.Category
 import com.example.pemogramanmobile1.data.model.Product
-import com.example.pemogramanmobile1.ui.theme.PemogramanMobile1Theme
+import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+// ============================================================
+// DAFTAR PRODUCT SCREEN
+// ============================================================
+
 @Composable
-fun ProductItemCard(
-    product: Product,
-    onClick: () -> Unit
+fun DaftarProductScreen(
+    navController: NavController? = null
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        )
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .clip(
-                        RoundedCornerShape(
-                            topStart = 12.dp,
-                            topEnd = 12.dp
-                        )
-                    )
-            ) {
-                Image(
-                    painter = painterResource(
-                        id = R.drawable.dummy_product
-                    ),
-                    contentDescription = product.name,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-            }
-
-            Column(
-                modifier = Modifier.padding(12.dp)
-            ) {
-
-                Text(
-                    text = product.name,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(
-                    modifier = Modifier.height(4.dp)
-                )
-
-                Text(
-                    text = product.description ?: "Tidak ada deskripsi",
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 2
-                )
-
-                Spacer(
-                    modifier = Modifier.height(8.dp)
-                )
-
-                Text(
-                    text = "Rp ${product.price.toInt()}",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(
-                    modifier = Modifier.height(4.dp)
-                )
-
-                Text(
-                    text = "Stok: ${product.stock}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-        }
-    }
-}
-
-
-@Composable
-fun CategoryItem(
-    category: Category,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .width(140.dp)
-            .clickable { onClick() },
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.surface
-            }
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp
-        )
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Text(
-                text = category.name,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = if (isSelected) {
-                    MaterialTheme.colorScheme.onPrimary
-                } else {
-                    MaterialTheme.colorScheme.onSurface
-                }
-            )
-
-            Spacer(
-                modifier = Modifier.height(4.dp)
-            )
-
-            Text(
-                text = "${category.products_count ?: 0} Produk",
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (isSelected) {
-                    MaterialTheme.colorScheme.onPrimary
-                } else {
-                    MaterialTheme.colorScheme.onSurface
-                }
-            )
-        }
-    }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DaftarProductScreen() {
+    // ========================================================
+    // STATE KATEGORI
+    // ========================================================
 
     var selectedCategoryId by remember {
-        mutableStateOf<Int?>(null)
+        mutableIntStateOf(0)
     }
 
-    val context = LocalContext.current
 
-    val filteredProducts = if (selectedCategoryId == null) {
-        DummyData.products
-    } else {
-        DummyData.products.filter {
-            it.category_id == selectedCategoryId
+    // ========================================================
+    // STATE SEARCH
+    // ========================================================
+
+    var searchQuery by remember {
+        mutableStateOf("")
+    }
+
+
+    // ========================================================
+    // STATE LOADING
+    // ========================================================
+
+    var isLoading by remember {
+        mutableStateOf(false)
+    }
+
+
+    // ========================================================
+    // STATE PRODUK
+    // ========================================================
+
+    var filteredProducts by remember {
+        mutableStateOf(
+            DummyData.products
+        )
+    }
+
+
+    // ========================================================
+    // FILTER PRODUK
+    // ========================================================
+
+    LaunchedEffect(
+        selectedCategoryId,
+        searchQuery
+    ) {
+
+        isLoading = true
+
+        delay(1000)
+
+        filteredProducts =
+            DummyData.products.filter { product ->
+
+                val categoryMatch =
+                    selectedCategoryId == 0 ||
+                            product.category_id ==
+                            selectedCategoryId
+
+                val searchMatch =
+                    product.name.contains(
+                        searchQuery,
+                        ignoreCase = true
+                    )
+
+                categoryMatch &&
+                        searchMatch
+            }
+
+        isLoading = false
+    }
+
+
+    // ========================================================
+    // STATELESS SCREEN
+    // ========================================================
+
+    StatelessDaftarProduct(
+
+        products =
+            filteredProducts,
+
+        categories =
+            DummyData.categories,
+
+        selectedCategoryId =
+            selectedCategoryId,
+
+        searchQuery =
+            searchQuery,
+
+        isLoading =
+            isLoading,
+
+
+        // ====================================================
+        // PILIH KATEGORI
+        // ====================================================
+
+        onCategorySelected = { categoryId ->
+
+            selectedCategoryId =
+                categoryId
+        },
+
+
+        // ====================================================
+        // SEARCH
+        // ====================================================
+
+        onSearchQueryChanged = { query ->
+
+            searchQuery =
+                query
+        },
+
+
+        // ====================================================
+        // KLIK PRODUK
+        // ====================================================
+
+        onProductClick = { product ->
+
+            navController?.navigate(
+                "detail/${product.id}"
+            )
+        },
+
+
+        // ====================================================
+        // HUBUNGI KAMI
+        // ====================================================
+
+        onContactUsClick = {
+
+            navController?.navigate(
+                "hubungi_kami"
+            )
+        },
+
+
+        // ====================================================
+        // KERANJANG
+        // ====================================================
+
+        onCartClick = {
+
+            navController?.navigate(
+                "cart"
+            )
         }
+    )
+}
+
+
+// ============================================================
+// STATELESS DAFTAR PRODUCT
+// ============================================================
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StatelessDaftarProduct(
+
+    products: List<Product>,
+
+    categories: List<Category>,
+
+    selectedCategoryId: Int,
+
+    searchQuery: String,
+
+    isLoading: Boolean,
+
+    onCategorySelected: (Int) -> Unit,
+
+    onSearchQueryChanged: (String) -> Unit,
+
+    onProductClick: (Product) -> Unit,
+
+    onContactUsClick: () -> Unit,
+
+    onCartClick: () -> Unit
+) {
+
+    // ========================================================
+    // STATE DROPDOWN MENU
+    // ========================================================
+
+    var expanded by remember {
+        mutableStateOf(false)
     }
+
+
+    // ========================================================
+    // SCAFFOLD
+    // ========================================================
 
     Scaffold(
+
         topBar = {
+
             TopAppBar(
+
                 title = {
+
                     Text(
-                        text = "Daftar Produk UMKM"
+                        text =
+                            "Daftar Produk"
                     )
                 },
+
+
+                // =================================================
+                // ACTIONS TOP BAR
+                // =================================================
+
                 actions = {
-                    Text(
-                        text = "🛒",
-                        modifier = Modifier.padding(
-                            end = 16.dp
-                        )
-                    )
+
+
+                    // =============================================
+                    // KERANJANG + BADGE
+                    // =============================================
+
+                    BadgedBox(
+
+                        badge = {
+
+                            val totalItems =
+                                CartManager.cartItems.sumOf {
+                                    it.quantity
+                                }
+
+
+                            // Badge hanya tampil
+                            // jika ada barang
+
+                            if (totalItems > 0) {
+
+                                Badge {
+
+                                    Text(
+
+                                        text =
+                                            if (
+                                                totalItems > 99
+                                            ) {
+                                                "99+"
+                                            } else {
+                                                totalItems
+                                                    .toString()
+                                            }
+                                    )
+                                }
+                            }
+                        }
+
+                    ) {
+
+                        IconButton(
+
+                            onClick = {
+
+                                onCartClick()
+                            }
+
+                        ) {
+
+                            Icon(
+
+                                imageVector =
+                                    Icons.Default.ShoppingCart,
+
+                                contentDescription =
+                                    "Keranjang"
+                            )
+                        }
+                    }
+
+
+                    // =============================================
+                    // MENU MORE
+                    // =============================================
+
+                    Box {
+
+                        IconButton(
+
+                            onClick = {
+
+                                expanded = true
+                            }
+
+                        ) {
+
+                            Icon(
+
+                                imageVector =
+                                    Icons.Default.MoreVert,
+
+                                contentDescription =
+                                    "Menu"
+                            )
+                        }
+
+
+                        // =========================================
+                        // DROPDOWN MENU
+                        // =========================================
+
+                        DropdownMenu(
+
+                            expanded =
+                                expanded,
+
+                            onDismissRequest = {
+
+                                expanded = false
+                            }
+
+                        ) {
+
+                            DropdownMenuItem(
+
+                                text = {
+
+                                    Text(
+                                        text =
+                                            "Hubungi Kami"
+                                    )
+                                },
+
+
+                                onClick = {
+
+                                    expanded = false
+
+                                    onContactUsClick()
+                                },
+
+
+                                leadingIcon = {
+
+                                    Icon(
+
+                                        imageVector =
+                                            Icons.Default.Email,
+
+                                        contentDescription =
+                                            "Hubungi Kami"
+                                    )
+                                }
+                            )
+                        }
+                    }
                 }
             )
         }
+
     ) { innerPadding ->
 
+
+        // ======================================================
+        // ISI HALAMAN
+        // ======================================================
+
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
         ) {
 
-            Text(
-                text = "Kategori Produk",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    top = 16.dp,
-                    end = 16.dp,
-                    bottom = 8.dp
-                )
+
+            // ==================================================
+            // SEARCH BAR
+            // ==================================================
+
+            OutlinedTextField(
+
+                value =
+                    searchQuery,
+
+                onValueChange =
+                    onSearchQueryChanged,
+
+                modifier =
+                    Modifier.fillMaxWidth(),
+
+                placeholder = {
+
+                    Text(
+                        text =
+                            "Cari produk..."
+                    )
+                },
+
+                leadingIcon = {
+
+                    Icon(
+
+                        imageVector =
+                            Icons.Default.Search,
+
+                        contentDescription =
+                            "Cari"
+                    )
+                },
+
+                singleLine = true
             )
 
+
+            Spacer(
+                modifier =
+                    Modifier.height(16.dp)
+            )
+
+
+            // ==================================================
+            // JUDUL KATEGORI
+            // ==================================================
+
+            Text(
+
+                text =
+                    "Kategori",
+
+                style =
+                    MaterialTheme
+                        .typography
+                        .titleMedium,
+
+                fontWeight =
+                    FontWeight.Bold
+            )
+
+
+            Spacer(
+                modifier =
+                    Modifier.height(8.dp)
+            )
+
+
+            // ==================================================
+            // LIST KATEGORI
+            // ==================================================
+
             LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(
-                    horizontal = 16.dp
-                ),
-                horizontalArrangement = Arrangement.spacedBy(
-                    12.dp
-                )
+
+                horizontalArrangement =
+                    Arrangement.spacedBy(8.dp)
             ) {
+
+
+                // ==============================================
+                // SEMUA
+                // ==============================================
 
                 item {
 
                     CategoryItem(
-                        category = Category(
-                            id = 0,
-                            name = "Semua",
-                            description = "Semua produk",
-                            products_count = DummyData.products.size
-                        ),
-                        isSelected = selectedCategoryId == null,
+
+                        category =
+                            Category(
+                                id = 0,
+                                name = "Semua",
+                                description = null,
+                                products_count = null
+                            ),
+
+                        isSelected =
+                            selectedCategoryId == 0,
+
                         onClick = {
-                            selectedCategoryId = null
+
+                            onCategorySelected(0)
                         }
                     )
                 }
 
-                items(DummyData.categories) { category ->
+
+                // ==============================================
+                // KATEGORI DUMMY DATA
+                // ==============================================
+
+                items(categories) { category ->
 
                     CategoryItem(
-                        category = category,
-                        isSelected = selectedCategoryId == category.id,
+
+                        category =
+                            category,
+
+                        isSelected =
+                            selectedCategoryId ==
+                                    category.id,
+
                         onClick = {
-                            selectedCategoryId = category.id
+
+                            onCategorySelected(
+                                category.id
+                            )
                         }
                     )
                 }
             }
 
-            Text(
-                text = "Daftar Produk",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    top = 16.dp,
-                    end = 16.dp,
-                    bottom = 8.dp
-                )
+
+            Spacer(
+                modifier =
+                    Modifier.height(16.dp)
             )
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
 
-                items(filteredProducts) { product ->
+            // ==================================================
+            // LOADING
+            // ==================================================
 
-                    ProductItemCard(
-                        product = product,
-                        onClick = {
-                            Toast.makeText(
-                                context,
-                                "Clicked: ${product.name}",
-                                Toast.LENGTH_SHORT
-                            ).show()
+            if (isLoading) {
+
+                Box(
+
+                    modifier =
+                        Modifier.fillMaxSize(),
+
+                    contentAlignment =
+                        Alignment.Center
+                ) {
+
+                    CircularProgressIndicator()
+                }
+
+            } else {
+
+
+                // =================================================
+                // PRODUK KOSONG
+                // =================================================
+
+                if (products.isEmpty()) {
+
+                    Box(
+
+                        modifier =
+                            Modifier.fillMaxSize(),
+
+                        contentAlignment =
+                            Alignment.Center
+                    ) {
+
+                        Text(
+
+                            text =
+                                "Produk tidak ditemukan.",
+
+                            style =
+                                MaterialTheme
+                                    .typography
+                                    .titleMedium
+                        )
+                    }
+
+                } else {
+
+
+                    // =============================================
+                    // GRID PRODUK
+                    // =============================================
+
+                    LazyVerticalGrid(
+
+                        columns =
+                            GridCells.Fixed(2),
+
+                        modifier =
+                            Modifier.fillMaxSize(),
+
+                        contentPadding =
+                            PaddingValues(
+                                bottom = 16.dp
+                            ),
+
+                        horizontalArrangement =
+                            Arrangement.spacedBy(12.dp),
+
+                        verticalArrangement =
+                            Arrangement.spacedBy(12.dp)
+                    ) {
+
+                        items(products) { product ->
+
+                            ProductItemCard(
+
+                                product =
+                                    product,
+
+                                onClick = {
+
+                                    onProductClick(
+                                        product
+                                    )
+                                }
+                            )
                         }
-                    )
+                    }
                 }
             }
         }
@@ -325,30 +681,241 @@ fun DaftarProductScreen() {
 }
 
 
-@Preview(
-    showBackground = true
-)
+// ============================================================
+// PRODUCT ITEM CARD
+// ============================================================
+
 @Composable
-fun PreviewProduct() {
-    PemogramanMobile1Theme {
-        ProductItemCard(
-            product = DummyData.products[0],
-            onClick = {}
-        )
+fun ProductItemCard(
+
+    product: Product,
+
+    onClick: () -> Unit
+) {
+
+    Card(
+
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable {
+
+                    onClick()
+                },
+
+        elevation =
+            CardDefaults
+                .cardElevation(
+                    defaultElevation = 4.dp
+                )
+    ) {
+
+        Column(
+
+            modifier =
+                Modifier.padding(12.dp)
+        ) {
+
+
+            // =================================================
+            // GAMBAR
+            // =================================================
+
+            val imageRes =
+
+                if (
+                    product.img ==
+                    "dummy_product"
+                ) {
+
+                    R.drawable.dummy_product
+
+                } else {
+
+                    R.drawable.dummy_product
+                }
+
+
+            Image(
+
+                painter =
+                    painterResource(
+                        id = imageRes
+                    ),
+
+                contentDescription =
+                    product.name,
+
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(150.dp),
+
+                contentScale =
+                    ContentScale.Crop
+            )
+
+
+            Spacer(
+                modifier =
+                    Modifier.height(8.dp)
+            )
+
+
+            // =================================================
+            // NAMA PRODUK
+            // =================================================
+
+            Text(
+
+                text =
+                    product.name,
+
+                style =
+                    MaterialTheme
+                        .typography
+                        .titleMedium,
+
+                fontWeight =
+                    FontWeight.Bold
+            )
+
+
+            Spacer(
+                modifier =
+                    Modifier.height(4.dp)
+            )
+
+
+            // =================================================
+            // HARGA
+            // =================================================
+
+            Text(
+
+                text =
+                    "Rp ${product.price}",
+
+                style =
+                    MaterialTheme
+                        .typography
+                        .bodyMedium,
+
+                color =
+                    MaterialTheme
+                        .colorScheme
+                        .primary,
+
+                fontWeight =
+                    FontWeight.Bold
+            )
+
+
+            Spacer(
+                modifier =
+                    Modifier.height(4.dp)
+            )
+
+
+            // =================================================
+            // STOK
+            // =================================================
+
+            Text(
+
+                text =
+                    "Stok: ${product.stock}",
+
+                style =
+                    MaterialTheme
+                        .typography
+                        .bodySmall
+            )
+        }
     }
 }
 
 
-@Preview(
-    showBackground = true
-)
+// ============================================================
+// CATEGORY ITEM
+// ============================================================
+
 @Composable
-fun PreviewCategory() {
-    PemogramanMobile1Theme {
-        CategoryItem(
-            category = DummyData.categories[0],
-            isSelected = true,
-            onClick = {}
+fun CategoryItem(
+
+    category: Category,
+
+    isSelected: Boolean,
+
+    onClick: () -> Unit
+) {
+
+    Card(
+
+        modifier =
+            Modifier.clickable {
+
+                onClick()
+            },
+
+        colors =
+            CardDefaults.cardColors(
+
+                containerColor =
+
+                    if (isSelected) {
+
+                        MaterialTheme
+                            .colorScheme
+                            .primary
+
+                    } else {
+
+                        MaterialTheme
+                            .colorScheme
+                            .surfaceVariant
+                    }
+            )
+    ) {
+
+        Text(
+
+            text =
+                category.name,
+
+            modifier =
+                Modifier.padding(
+
+                    horizontal = 16.dp,
+
+                    vertical = 10.dp
+                ),
+
+            color =
+
+                if (isSelected) {
+
+                    MaterialTheme
+                        .colorScheme
+                        .onPrimary
+
+                } else {
+
+                    MaterialTheme
+                        .colorScheme
+                        .onSurfaceVariant
+                },
+
+            fontWeight =
+
+                if (isSelected) {
+
+                    FontWeight.Bold
+
+                } else {
+
+                    FontWeight.Normal
+                }
         )
     }
 }
